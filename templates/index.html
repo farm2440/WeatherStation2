@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="../static/styles.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>WS LZ2SMX</title>
+
+	<style>
+		<!--
+		body				{ font-family: Calibri; font-size: 12pt }
+		td					{ font-family: Calibri; font-size: 14pt }
+		a            		{ text-decoration: none }
+		-->
+	</style>
+</head>
+
+<body topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0" bgcolor="#E7E7E7">
+
+<!-- Tab links -->
+    <div class="tab">
+      <button class="tablinks" onclick="openCity(event, 'Weather')">WEATHER</button>
+      <button class="tablinks" onclick="openCity(event, 'Telemetry')">TELEMETRY</button>
+      <button class="tablinks" onclick="openCity(event, 'Bees')">BEES</button>
+      <button class="tablinks" onclick="openCity(event, 'APRS')">APRS</button>
+      <div id="nowis" class="clsnow">-==-NOW-==-</div>
+    </div>
+
+    <!-- Tab content -->
+    <div id="Weather" class="tabcontent">
+        <table class="weather_table">
+            <tr><th colspan="2" >ВРЕМЕТО В МОМЕНТА</th></tr>
+            <tr><td>Температура</td><td id="temp">   </td></tr>
+            <tr><td>Точка на оросяване</td><td id="due">   </td></tr>
+            <tr><td>Влажност</td><td id="hum">   </td></tr>
+            <tr><td>Налягане</td><td id="bar">   </td></tr>
+            <tr><td colspan="2" class="group_row">Вятър</td></tr>
+            <tr><td>Посока</td><td id="wind_dir">    </td></tr>
+            <tr><td>Сила</td><td id="wind">    </td></tr>
+            <tr><td>Пориви</td><td id="gusts">    </td></tr>
+            <tr><td colspan="2" class="group_row">Валежи</td></tr>
+            <tr><td>За последния час</td><td id="rain1">   </td></tr>
+            <tr><td>За последните 24 часа</td><td id="rain24">   </td></tr>
+        </table>
+        <p></p>
+        <table class="weather_table">
+            <tr><td class="ubat">Ubat</td><td id="ubat" class="ubat_low">   </td></tr>
+        </table>
+        <p id="next_wx_tx">Предаване на метео данни след N.A.</p>
+
+    </div>
+
+    <div id="Telemetry" class="tabcontent">
+      <table class="weather_table">
+          <tr><th colspan="3" >Измерени стойности</th></tr>
+          <tr><td>Гараж</td>       <td id="T1" data-type="temp">  </td><td id="Rh1" data-type="hum">   </td></tr>
+          <tr><td>Маза</td>        <td id="T2" data-type="temp">  </td><td id="Rh2" data-type="hum">   </td></tr>
+          <tr><td>Стая етаж 1</td> <td id="T3" data-type="temp">   </td><td id="Rh3" data-type="hum">   </td></tr>
+          <tr><td>Предверие етаж 1      </td> <td id="T4" data-type="temp">   </td><td id="Rh4" data-type="hum">   </td></tr>
+          <tr><td>Кухня</td>       <td id="T5" data-type="temp">   </td><td id="Rh5" data-type="hum">   </td></tr>
+          <tr><td>Баня</td>        <td id="T6" data-type="temp">   </td><td id="Rh6" data-type="hum">   </td></tr>
+          <tr><td>Коридор</td>     <td id="T7" data-type="temp">   </td><td id="Rh7" data-type="hum">   </td></tr>
+          <tr><td>Таван</td>       <td id="T8" data-type="temp">   </td><td id="Rh8" data-type="hum">   </td></tr>
+          <tr><td>Спалня юг</td>   <td id="T9" data-type="temp">   </td><td id="Rh9" data-type="hum">   </td></tr>
+          <tr><td>Спалня изток</td>     <td id="T10" data-type="temp">   </td><td id="Rh10" data-type="hum">   </td></tr>
+          <tr><td>Светлина Гараж</td>   <td id="L1" data-type="bit">   </td></tr>
+      </table>
+      <p id="next_tm_tx">Предаване на телеметрия след N.A.</p>
+    </div>
+
+    <div id="APRS" class="tabcontent">
+        <ul id="aprs_list">
+            <!-- new content appears here -->
+        </ul>
+    </div>
+
+    <div id="Bees" class="tabcontent">
+        <table class="weather_table">
+            <tr><th colspan="2" >КОШЕР 1</th></tr>
+            <tr><td>Температура</td><td id="h1_temp">   </td></tr>
+            <tr><td>Влажност</td><td id="h1_hum">   </td></tr>
+            <tr><td>Тегло</td><td id="h1_weight">   </td></tr>
+
+            <tr><th colspan="2" >КОШЕР 2</th></tr>
+            <tr><td>Температура</td><td id="h2_temp">   </td></tr>
+            <tr><td>Влажност</td><td id="h2_hum">   </td></tr>
+            <tr><td>Тегло</td><td id="h2_weight">   </td></tr>
+
+            <tr><th colspan="2" >КОШЕР 3</th></tr>
+            <tr><td>Температура</td><td id="h3_temp">   </td></tr>
+            <tr><td>Влажност</td><td id="h3_hum">   </td></tr>
+            <tr><td>Тегло</td><td id="h3_weight">   </td></tr>
+        </table>
+    </div>
+
+
+<script>
+    var currentURL = window.location.href;    
+    let sseURL = currentURL + "/sse";
+    console.log("Current URL:" + currentURL);
+    console.log("SSE URL:" + sseURL);
+
+    const eventSource = new EventSource(sseURL);
+    //const eventSource = new EventSource('http://127.0.0.1:80/sse');
+    
+    aprs_buffer = []
+
+    eventSource.onmessage = function (currentEvent) {
+        if (currentEvent.data.length > 0) {
+            console.log(currentEvent.data)
+            const obj = JSON.parse(currentEvent.data);
+            // Дата и час
+            if ( obj.type == 'now' ) updateNow(obj);
+            // Метео данни
+            if ( obj.type == 'meteo' ) updateMeteoTab(obj);
+            //Телеметрия
+            if ( obj.type == 'tele' ) updateTeleTab(obj);
+            // APRS
+            if ( obj.type == 'aprs' ) updateAPRSTab(obj);
+            // Пчели
+            if ( obj.type == 'bees' ) updateBeesTab(obj);
+        }
+    };
+
+    function updateNow(obj) {
+        elementValue = obj['now'];
+        elm = document.getElementById('nowis');
+        elm.innerHTML = elementValue;
+    }
+
+    function updateBeesTab(obj) {
+        //Set parameters value in HTML
+        for (var param in obj) {
+            elementValue = obj[param];
+            switch(param) {
+                case 'h1_temp':
+                    elm = document.getElementById('h1_temp');
+                    elm.innerHTML = elementValue + ' C°';
+                    break;
+                case 'h1_hum':
+                    elm = document.getElementById('h1_hum');
+                    elm.innerHTML = elementValue + ' %';
+                    break;
+                case 'h1_weight':
+                    elm = document.getElementById('h1_weight');
+                    elm.innerHTML = elementValue + ' kg';
+                    break;
+                case 'h2_temp':
+                    elm = document.getElementById('h2_temp');
+                    elm.innerHTML = elementValue + ' C°';
+                    break;
+                case 'h2_hum':
+                    elm = document.getElementById('h2_hum');
+                    elm.innerHTML = elementValue + ' %';
+                    break;
+                case 'h2_weight':
+                    elm = document.getElementById('h2_weight');
+                    elm.innerHTML = elementValue + ' kg';
+                    break;
+                case 'h3_temp':
+                    elm = document.getElementById('h3_temp');
+                    elm.innerHTML = elementValue + ' C°';
+                    break;
+                case 'h3_hum':
+                    elm = document.getElementById('h3_hum');
+                    elm.innerHTML = elementValue + ' %';
+                    break;
+                case 'h3_weight':
+                    elm = document.getElementById('h3_weight');
+                    elm.innerHTML = elementValue + ' kg';
+                    break;
+            }
+        }
+    }
+
+    function updateTeleTab(obj) {
+        for (var param in obj) {
+            elementValue = obj[param];
+            console.log(param + '=' + elementValue);
+            if(param=="type") continue;
+            if(param=="next_tx") {
+                elm = document.getElementById("next_tm_tx");
+                elm.innerHTML = "Предаване на телеметрия след: " + elementValue;
+                continue;
+            }
+            elm = document.getElementById(param);
+            console.log(elm.dataset);
+            if(elm.dataset.type == "temp") elm.innerHTML = elementValue + ' C°';
+            if(elm.dataset.type == "hum") elm.innerHTML = elementValue + ' %';
+            if(elm.dataset.type == "bit") elm.innerHTML = elementValue;
+        }
+    }
+
+    function updateMeteoTab(obj) {
+        //Set parameters value in HTML
+        for (var param in obj) {
+            elementValue = obj[param];
+            // console.log(param + '=' + elementValue);
+            switch(param) {
+                case 'T':
+                    elm = document.getElementById('temp');
+                    elm.innerHTML = elementValue + ' C°';
+                    break;
+                case 'due':
+                    elm = document.getElementById('due');
+                    elm.innerHTML = elementValue + ' C°';
+                    break;
+                case 'Rh':
+                    elm = document.getElementById('hum');
+                    elm.innerHTML = elementValue + ' %';
+                    break;
+                case 'P':
+                    elm = document.getElementById('bar');
+                    elm.innerHTML = elementValue + '  mbar';
+                    break;
+                case 'Ubat':
+                    elm = document.getElementById('ubat');
+                    elm.innerHTML = elementValue + ' V';
+                    u = parseFloat(elementValue);
+                    if(u > 12.2) {
+                        elm.className = "ubat_ok";
+                        break;
+                    } else {
+                        if ((u<=12.2) && (u>=11.8)) {
+                            elm.className = "ubat_low";
+                            break;
+                        } else {
+                            elm.className = "ubat_critical";
+                        }
+                    }
+
+                case 'dir':
+                    elm = document.getElementById('wind_dir');
+                    elm.innerHTML = elementValue;
+                    break;
+                case 'speed':
+                    elm = document.getElementById('wind');
+                    elm.innerHTML = elementValue + ' m/s';
+                    break;
+                case 'gusts':
+                    elm = document.getElementById('gusts');
+                    elm.innerHTML = elementValue + ' m/s';
+                    break;
+                case 'rain1':
+                    elm = document.getElementById('rain1');
+                    elm.innerHTML = elementValue + ' mm/m&#178';
+                    break;
+                case 'rain24':
+                    elm = document.getElementById('rain24');
+                    elm.innerHTML = elementValue + ' mm/m&#178';
+                    break;
+                case 'next_tx':
+                    elm = document.getElementById('next_wx_tx');
+                    elm.innerHTML = "Предаване на метео данни след: " + elementValue;
+                    break;
+
+            }
+        }
+	}
+
+
+	function updateAPRSTab(obj) {
+	    message = obj['msg'];
+	    aprs_buffer.push(message);
+	    if (aprs_buffer.length > 20) aprs_buffer.shift();
+        console.log('APRS:' + aprs_buffer);
+
+        listElement = document.getElementById('aprs_list');
+        listElement.innerHTML = ""
+        aprs_buffer.forEach( msg => {
+            newElement = document.createElement('li');
+            newElement.innerText = msg;
+            listElement.appendChild(newElement);
+        });
+	}
+
+    //---- TABS ----
+    function openCity(evt, cityName) {
+          // Declare all variables
+          var i, tabcontent, tablinks;
+
+          // Get all elements with class="tabcontent" and hide them
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+
+          // Get all elements with class="tablinks" and remove the class "active"
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+
+          // Show the current tab, and add an "active" class to the button that opened the tab
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " active";
+    }
+
+//------- Fullscreen mode
+    addEventListener("click", function() {
+    var
+          el = document.documentElement
+        , rfs =
+               el.requestFullScreen
+            || el.webkitRequestFullScreen
+            || el.mozRequestFullScreen
+    ;
+    rfs.call(el);
+    });
+</script>
+
+</body>
+</html>
+

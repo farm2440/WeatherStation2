@@ -1,0 +1,9 @@
+Drawing from the wisdom of Wikipedia, the definitions are as follows:
+
+Trace rainfall, or sporadic drizzles, occur when the 24-hour precipitation is less than 0.1 millimeters.
+Light rain falls within the range of 0.1 - 4.9 millimeters in a 12-hour period, or 0.1 - 9.9 millimeters over 24 hours.
+Moderate rain is characterized by 5.0 - 14.9 millimeters of rainfall in 12 hours, or 10 - 24.9 millimeters over a full day.
+Heavy rain is defined as 15.0 - 29.9 millimeters in 12 hours, or 25.0 - 49.9 millimeters across 24 hours.
+Torrential rain refers to a downpour amounting to 30.0 - 69.9 millimeters in 12 hours, or 50.0 - 99.9 millimeters in 24 hours.
+A large downpour is one where rainfall measures 70.0 - 139.9 millimeters in a half-day period, or 100.0 - 249.9 millimeters over an entire day.
+Lastly, extraordinarily heavy downpours witness rainfalls exceeding 140.0 millimeters in 12 hours or 250.0 millimeters over 24 hours.

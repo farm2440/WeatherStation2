@@ -1,0 +1,133 @@
+Install VS Code
+RaspberryPy COnfig -> enable VNC, SSH
+
+    sudo apt update
+    sudo apt install redis-server
+    sudo systemctl enable /lib/systemd/system/redis-server.service
+    sudo systemctl start redis
+
+svilen@ws2:~ $ redis-cli
+keys *
+
+sudo rm /usr/lib/python3.11/EXTERNALLY-MANAGED
+
+svilen@ws2:~/ws2 $ pip install redis
+svilen@ws2:~/ws2 $ sudo apt-get install direwolf
+
+==== RUN THE APP MANUALLY ====
+direwolf
+svilen@ws2:~ $ cd ws2/
+svilen@ws2:~/ws2 $ kissutil -o KISSIN -f KISSOUT
+svilen@ws2:~/ws2 $ python sensor_reader.py 
+svilen@ws2:~/ws2 $ python send_aprs_ws.py 
+svilen@ws2:~/ws2 $ python send_aprs_tm.py 
+svilen@ws2:~/ws2 $ python web_emit.py 
+svilen@ws2:~/ws2 $ sudo python web_interface.py 
+===============================
+
+Start Direwolf at Boot, the SystemD way
+https://www.f4fxl.org/start-direwolf-at-boot-the-systemd-way/
+
+sudo apt install tmux
+sudo touch /etc/systemd/system/direwolf.service
+-------------
+cat /etc/systemd/system/direwolf.service
+[Unit]
+Description=Direwolf
+After=network.target
+
+[Service]
+Type=forking
+#Modify the end of the line below to fit your own needs i.e path to your configuration file
+ExecStart=/usr/bin/tmux new-session -d -s direwolf '/usr/bin/direwolf -c /home/svilen/ws2/direwolf.conf'
+Restart=always
+
+[Install]
+WantedBy=default.target
+
+--------------
+
+sudo systemctl enable direwolf.service
+sudo systemctl status direwolf.service
+sudo tmux attach -t direwolf
+
+=====================
+Start Kissutil at Boot
+
+sudo cat /etc/systemd/system/kissutil.service
+[Unit]
+Description=Kissutil
+After=network.target
+
+[Service]
+Type=forking
+#Modify the end of the line below to fit your own needs i.e path to your configuration file
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/tmux new-session -d -s kissutil '/usr/bin/kissutil -o /home/svilen/ws2/KISSIN -f /home/svilen/ws2/KISSOUT'
+Restart=always
+
+[Install]
+WantedBy=default.target
+
+---------------------------------
+
+sudo systemctl enable kissutil.service
+svilen@ws2:~ $ sudo tmux attach -t kissutil
+
+======================
+Start python apps at boot
+
+crontab -e
+
+@reboot /home/svilen/ws2/run_reader.sh
+@reboot /home/svilen/ws2/start.sh
+-------------------------------------------------
+
+svilen@ws2:~/ws2 $ cat start.sh 
+#! /bin/bash
+
+cd /home/svilen/ws2
+sleep 60   # wait for network connection
+
+# export errors to file error.txt
+sudo date >> /home/svilen/ws2/error.txt
+
+python sensor_reader.py &       # >> /home/svilen/ws2/error.txt 2>&1 &
+python web_emit.py &           # >> /home/svilen/ws2/error.txt 2>&1 &
+sudo python web_interface.py &  # >> /home/svilen/ws2/error.txt 2>&1 &
+
+sleep 120   # wait for sensor data to be collected
+python send_aprs_ws.py & # >> /home/svilen/ws2/error.txt 2>&1 &
+sleep 20
+python send_aprs_tm.py & # >> /home/svilen/ws2/error.txt 2>&1 &
+
+-----------------------------
+
+
+PROBLEM: sensor reader is not starting from crontab but runs from cli
+REASON: 
+	svilen@ws2:~/ws2 $ cat error.txt 
+	Traceback (most recent call last):
+	  File "/home/svilen/ws2/sensor_reader.py", line 9, in <module>
+    		import redis
+	ModuleNotFoundError: No module named 'redis'
+SOLUTION:
+	svilen@ws2:~/ws2 $ python -m venv venv
+	svilen@ws2:~/ws2 $ ls venv/bin/
+	activate  activate.csh  activate.fish  Activate.ps1  pip  pip3  pip3.11  python  python3  python3.11
+	svilen@ws2:~/ws2 $ source venv/bin/activate
+	(venv) svilen@ws2:~/ws2 $ 
+	(venv) svilen@ws2:~/ws2 $ pip install redis
+
+
+------------------------------
+Connect console to process output
+sudo tmux attach -t kissutil
+sudo tmux attach -t direwolf
+
+
+
+
+
+
+

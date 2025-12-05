@@ -1,0 +1,55 @@
+Трябва да има стартирани:
+direwolf   (Port 8001)
+kissutil [-o <директория входящи>] -f <директория изходящи>
+    когато в директория изходящи се запише текстов файл с APRS съобщение
+    kissutil го предава към direwolf в нужния формат за излъчване. Отделно
+    трябва да се задейства и освободи PTT
+    TODO: Директория в RAM
+
+tcprelay.py - Чака TCP конекция. При изградена такава релето за РТТ е задействано.
+                (Port 8888)
+
+https://www.dzombak.com/blog/2023/12/Maintaining-a-solid-WiFi-connection-on-Raspberry-Pi.html
+
+==========REDIS===========
+Redis Tutorial :
+https://www.youtube.com/playlist?list=PLVCgi5HZ0-YtWh-PD8LUCbdsG7oDIfGlD
+
+Инсталиране на Redis върху Raspberry:
+https://pimylifeup.com/raspberry-pi-redis/
+    sudo apt update
+    sudo apt install redis-server
+    sudo systemctl enable /lib/systemd/system/redis-server.service
+    sudo systemctl start redis
+
+pi@raspberrypi:~/work/python/weatherstation2 $ pip install redis
+
+pi@raspberrypi:~ $ redis-cli
+127.0.0.1:6379> keys *
+(empty list or set)
+============================
+
+
+_.../...g...t...h...r000p000            нищо
+_.../...g...t...h...r000p000b10140
+_.../...g...t077h026r000p000b10140      t=25 rh=26
+_.../...g...t077h053r000p000b10140      t=25 rh=53
+_.../...g...t078h020r017p017b10140       rain1h:17 rain24h:17 T=26 Rh=20 P=1014 Ubat=12.352V
+                                        ПРИ изпратена стойност за дъжд 17 показва 4.3 мм
+                                        100 - 25.4 mm / 200 - 50.8 mm
+Възраждане, телеметрия:
+LZ2SMX-3>APMI06,WIDE2-2:!4313.98N/02753.78EyTest data
+LZ2SMX-3>APMI06,WIDE2-2::LZ0SMX   :PARM.T1,T2,T3,Rh1,Rh2,Rh3
+LZ2SMX-3>APMI06,WIDE2-2::LZ0SMX   :UNIT.C,C,C,Pcnt,Pcnt,Pcnt
+LZ2SMX-3>APMI06,WIDE2-2::LZ0SMX   :EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0
+LZ2SMX-3>APMI06,WIDE2-2:T#21,22,23,41,42,43
+
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*:@031324z4242.86NG02621.83E#IPSC2-Bulgaria LZ0SLI peak Karandila
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*:@031334z4242.86NG02621.83E#IPSC2-Bulgaria LZ0SLI peak Karandila
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*:@031344z4242.86NG02621.83E#IPSC2-Bulgaria LZ0SLI peak Karandila
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*::LZ0SLI   :PARM.Vin,Rx1h,Dg1h,EffTo,Eff1,,,,,,,,
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*::LZ0SLI   :UNIT.Volt,Pkt,Pkt,Pcnt,Pcnt ,,,,,,,,
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*::LZ0SLI   :EQNS.0,0.075,0,0,10,0,0,10,0,0,1,0,0,1,0
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*::LZ0SLI   :BITS.11111111,LZ0SLI telemetry
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*:T#102,000,032,000,079,087,00000000
+[0] LZ0SLI>APMI06,LZ0DAD,WIDE1*:@031354z4242.86NG02621.83E#IPSC2-Bulgaria LZ0SLI peak Karandila

@@ -1,0 +1,97 @@
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  -webkit-animation: fadeEffect 1s;
+  animation: fadeEffect 1s;
+}
+
+
+/* Fade in tabs */
+@-webkit-keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+table{
+  border: 1px solid;
+  padding: 15px;
+  border-radius: 10px;
+  background: white;
+}
+
+td {
+  border: 1px solid;
+  padding: 5px;
+  border-radius: 2px;
+  color: green;
+  background: #F0FFF0;
+}
+.group_row , th{
+  border: 1px solid;
+  padding: 5px;
+  border-radius: 2px;
+  color: #F0FFF0;
+  text-align: center;
+  background: green;
+}
+
+.ubat {
+  color: black;
+  background: white;
+  border: none;
+}
+
+.ubat_ok{
+  color: green;
+  background: #F0FFF0;
+}
+
+.ubat_low {
+  color: #D35400;
+  background: #F9E79F ;
+}
+
+.ubat_critical {
+  color: red;
+  background: #FFF0F0;
+}
+
+.clsnow {
+  color: darkgreen;
+  float: right;
+  top: 50%;
+}

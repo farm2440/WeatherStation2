@@ -1,0 +1,24 @@
+
+{
+    'device': 'DHT22',
+    'mac': '48:55:19:0C:4A:54',
+    'hum': '39',
+    'temp': '25'
+}
+
+
+C:\work\PyCharmProjects\WeatherStation2\.venv\Scripts\python.exe C:\work\PyCharmProjects\WeatherStation2\sensor_reader.py
+2024-03-31 14:22:29.525261   b'MAC=77:b7:bf\r\nBMP180: T=37 P=994hPa\r\nAM2302: T=31 Rh=59\r\nTX20: Dir=8 Speed=15\r\nRAIN: 0\r\nUbat: 13.168 V\r\nEND\r\n'
+Not valid JSON.
+2024-03-31 14:24:01.728870   b'MAC=77:b7:bf\r\nBMP180: T=37 P=994hPa\r\nAM2302: T=31 Rh=60\r\nTX20: Dir=12 Speed=4\r\nRAIN: 0\r\nUbat: 13.152 V\r\nEND\r\n'
+Not valid JSON.
+2024-03-31 14:25:32.954255   b'MAC=77:b7:bf\r\nBMP180: T=37 P=994hPa\r\nAM2302: T=31 Rh=60\r\nTX20: Dir=13 Speed=0\r\nRAIN: 0\r\nUbat: 13.120 V\r\nEND\r\n'
+Not valid JSON.
+2024-03-31 14:27:04.194811   b'MAC=77:b7:bf\r\nBMP180: T=37 P=994hPa\r\nAM2302: T=31 Rh=62\r\nTX20: Dir=6 Speed=0\r\nRAIN: 0\r\nUbat: 13.40 V\r\nEND\r\n'
+Not valid JSON.
+2024-03-31 14:28:35.435167   b'MAC=77:b7:bf\r\nBMP180: T=37 P=994hPa\r\nAM2302: T=31 Rh=56\r\nTX20: Dir=12 Speed=0\r\nRAIN: 0\r\nUbat: 13.136 V\r\nEND\r\n'
+Not valid JSON.
+2024-03-31 14:30:06.570706   b'MAC=77:b7:bf\r\nBMP180: T=37 P=994hPa\r\nAM2302: T=31 Rh=57\r\nTX20: Dir=8 Speed=0\r\nRAIN: 0\r\nUbat: 13.8 V\r\nEND\r\n'
+Not valid JSON.
+2024-03-31 14:33:11.057876   b'MAC=77:b7:bf\r\nBMP180: T=37 P=994hPa\r\nAM2302: T=31 Rh=60\r\nTX20: Dir=9 Speed=18\r\nRAIN: 0\r\nUbat: 13.24 V\r\nEND\r\n'
+Not valid JSON.

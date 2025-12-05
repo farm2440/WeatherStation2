@@ -1,0 +1,124 @@
+https://www.circuitbasics.com/how-to-record-audio-with-the-raspberry-pi/
+
+Direwolf DOC:
+https://github.com/wb2osz/direwolf/tree/master/doc/
+
+INSTALL Direwolf on PI:
+https://fuzzthepiguy.tech/direwolf-install/  !!!
+https://www.marrold.co.uk/2019/04/installing-direwolf-15-on-raspberry-pi.html
+
+
+sudo apt install git make cmake libgps-dev libusb-dev libudev-dev libhamlib-dev gcc g++ libasound2-dev 
+
+Now Let's Install Direwolf:
+    git clone https://www.github.com/wb2osz/direwolf
+    cd direwolf
+Run The Checkout Command:
+    git checkout dev
+Now We Need To Make The Build Dir:
+    mkdir build && cd build
+Time To Make And Install Direwolf:
+Run Each Line One At A Time:
+    cmake ..
+    make
+    sudo make install
+    make install-conf
+===================================================
+Start direwolf with black-white console:
+direwolf -t 0
+direwolf -t 0 -c direwolf.conf -l ./log -d u -d n
+direwolf -t 0 -d n -l .
+
+
+
+Check audio interfaces with 
+	arecord -l
+	aplay -l
+Selected device shall be put in direwolf.conf file as:
+	ADEVICE plughw:3,0
+
+pi@raspberrypi:~/Documents/python/weatherstation2 $ arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 3: Device [USB Audio Device], device 0: USB Audio [USB Audio]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+pi@raspberrypi:~/Documents/python/weatherstation2 $ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: b1 [bcm2835 HDMI 1], device 0: bcm2835 HDMI 1 [bcm2835 HDMI 1]
+  Subdevices: 4/4
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+card 1: b2 [bcm2835 HDMI 2], device 0: bcm2835 HDMI 2 [bcm2835 HDMI 2]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+card 2: Headphones [bcm2835 Headphones], device 0: bcm2835 Headphones [bcm2835 Headphones]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+card 3: Device [USB Audio Device], device 0: USB Audio [USB Audio]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+pi@raspberrypi:~/Documents/python/weatherstation2 $ 
+
+
+==============================================
+KISSUTIL
+https://www.reddit.com/r/amateurradio/comments/cu2dfu/how_to_send_aprs_messages_on_linux_cli_via_kiss/?rdt=45850
+https://github.com/wb2osz/direwolf/issues/121
+
+Sent as file content:
+LZ2SMX-3>APDW14,WIDE2-2:!4313.98N/02753.78EyPTEST-1
+Displayed on aprs.fi:                        
+2024-03-23 13:19:25 EET: LZ2SMX-3>APDW14,WIDE2-1,qAR,LZ0DAD:!4313.98N/02753.78EyPTEST-1
+On direwolf started with:
+
+Digipeater WIDE2 (probably LZ0DAD) audio level = 64(10/6)    __||||___
+[0.3] LZ2SMX-3>APDW14,LZ0DAD,WIDE2*:!4313.98N/02753.78E#PTEST-2
+Position, Generic digipeater, DireWolf, WB2OSZ
+N 43 13.9800, E 027 53.7800
+PTEST-2
+
+>>> Data frame to KISS client application, channel 0, total length = 60
+  000:  c0 00 82 a0 88 ae 62 68 e0 98 b4 64 a6 9a b0 e6  ......bh...d....
+  010:  98 b4 60 88 82 88 e0 ae 92 88 8a 64 40 e1 03 f0  ..`........d@...
+  020:  21 34 33 31 33 2e 39 38 4e 2f 30 32 37 35 33 2e  !4313.98N/02753.
+  030:  37 38 45 23 50 54 45 53 54 2d 32 c0              78E#PTEST-2.
+
+==================================================================================
+TELEMETRY:
+https://w4krl.com/sending-aprs-analog-telemetry-the-basics/
+
+Captured telemetry:
+[0] LZ2PCB-5>APDW16,LZ1TNT,LZ2AB-2,WIDE2*::LZ2PCB-5 :PARM.UBatt,IChrge,Temp1,Temp2,Batt,AC,B6,B5,B4,B3,B2,B0
+[0] LZ2PCB-5>APDW16,LZ1TNT,LZ2AB-2,WIDE2*::LZ2PCB-5 :UNIT.Vdc,Adc,deg.C,deg.C,%,AC,B6,B5,B4,B3,B2,B0
+[0] LZ2PCB-5>APDW16,LZ1TNT,LZ2AB-2,WIDE2*::LZ2PCB-5 :EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0
+
+On aprs.fi:
+Telemetry 2024-03-23 14:14:52: show telemetry
+UBatt: 11.147 Vdc, IChrge: 0 Adc, Temp1: 22 deg.C, Temp2: 46 deg.C, Batt: 78 %
+ AC   B6   B5   B4   B3   B2   B0 
+LZ2PCB-5 Currently online, up 19 weeks, 2 days, 19 hours, 11 minutes
+power 4W, antenna HAAT 3 m, gain 4 dBi omni,
+range 6.1 km
+
+---------------
+[0] LZ0DAV>APMI06,WIDE1-2::LZ0DAV   :UNIT.Volt,Pkt,Pkt,Pcnt,Pcnt,On,On,On,On,Hi,Hi,Hi,Hi
+[0] LZ0DAV>APMI06,WIDE1-2::LZ0DAV   :EQNS.0,0.075,0,0,10,0,0,10,0,0,1,0,0,1,0
+[0] LZ0DAV>APMI06,WIDE1-2::LZ0DAV   :BITS.11111111,LZ0DAV Telemetry
+[0] LZ0DAV>APMI06,LZ0DAD*,WIDE1-1::LZ0DAV   :PARM.Vin,Rx1h,Dg1h,EffTo,Eff1h,O1,O2,O3,O4,I1,I2,I3,I4
+[0] LZ0DAV>APMI06,LZ0DAD*,WIDE1-1::LZ0DAV   :UNIT.Volt,Pkt,Pkt,Pcnt,Pcnt,On,On,On,On,Hi,Hi,Hi,Hi
+[0] LZ0DAV>APMI06,LZ0DAD*,WIDE1-1::LZ0DAV   :EQNS.0,0.075,0,0,10,0,0,10,0,0,1,0,0,1,0
+[0] LZ0DAV>APMI06,LZ0DAD*,WIDE1-1::LZ0DAV   :BITS.11111111,LZ0DAV Telemetry
+[0] LZ0DAV>APMI06,LZ0DAD,LZ2AB-3*::LZ0DAV   :PARM.Vin,Rx1h,Dg1h,EffTo,Eff1h,O1,O2,O3,O4,I1,I2,I3,I4
+[0] LZ0DAV>APMI06,LZ0DAD,LZ2AB-3*::LZ0DAV   :UNIT.Volt,Pkt,Pkt,Pcnt,Pcnt,On,On,On,On,Hi,Hi,Hi,Hi
+[0] LZ0DAV>APMI06,LZ0DAD,LZ2AB-3*::LZ0DAV   :EQNS.0,0.075,0,0,10,0,0,10,0,0,1,0,0,1,0
+[0] LZ0DAV>APMI06,LZ0DAD,LZ2AB-3*::LZ0DAV   :BITS.11111111,LZ0DAV Telemetry
+[0] LZ0DAV>APMI06,WIDE1-2:T#163,183,045,000,095,097,00000000
+[0] LZ0DAV>APMI06,LZ0DAD*,WIDE1-1:T#163,183,045,000,095,097,00000000
+[0] LZ0DAV>APMI06,LZ0DAD,LZ2AB-3*:T#163,183,045,000,095,097,00000000
+
+
+

@@ -1,0 +1,17 @@
+# At reboot adjust date and time using SIM900, run sensor_reader.py, web_emit.py and web_interface.py by running start.sh
+@reboot /home/svilen/ws2/start.sh >/dev/null 2>&1
+
+# Run sim900_bee_data.py every hour 
+0 * * * * /bin/python3 /home/svilen/ws2/sim900_bee_data.py >/dev/null 2>&1
+# Run send_aprs_tm.py every 00,20 and 40 minute
+05,25,45 * * * * /bin/python3 /home/svilen/ws2/send_aprs_tm.py >/dev/null 2>&1
+# Run send_aprs_ws every 10,20 and 50 minute
+15,35,55 * * * * /bin/python3 /home/svilen/ws2/send_aprs_ws.py >/dev/null 2>&1
+
+# Check WIFI and reboot if connection is lost
+9,19,29,39,49,59 * * * * /home/svilen/ws2/wifi_check.sh  >/dev/null 2>&1
+
+# reboot every day and night
+59 00 * * * /sbin/shutdown -r now
+59 12 * * * /sbin/shutdown -r now
+
