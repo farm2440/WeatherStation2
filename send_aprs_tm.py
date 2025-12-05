@@ -12,11 +12,14 @@ from datetime import timedelta, datetime
 import redis
 import os
 import random
+import RPi.GPIO as GPIO
 
 
 # TODO: Да се проверява за активни Direwolf и Kissutil преди да се активира РТТ
 # релето. Ако процесите не са активни да се изпрати команда за разпадане на 
 # релето и да не се пращат данни !!!!
+
+# 
 
 tx_period = timedelta(minutes=20, seconds=00)  # Период на изпращане на APRS в секунди
 SERIAL_PORT_NAME = '/dev/ttyUSB0' # Локално реле за РТТ, управлява се по сериен порт с команда
@@ -111,6 +114,14 @@ while True:
         time.sleep(5)
         continue
 
+GPIO.setmode(GPIO.BCM)
+GPIO_PIN = 21
+GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+aprs_enable = GPIO.input(GPIO_PIN)
+GPIO.cleanup()
+if aprs_enable == GPIO.LOW:
+    print('send_aprs_tm: APRS not enabled! Check the switch position!')
+    exit(0)    
 
 snum = rds.get('sequence_number')
 if snum is None:
@@ -121,14 +132,15 @@ else:
         sequence_number = 1
 rds.set('sequence_number', value=sequence_number)
 
-s_next_tm_tx = str(datetime.now() + tx_period)[:-7]
-print('Time until next telemetry TX:', s_next_tm_tx)
-rds.set('next_tm_tx', value=s_next_tm_tx, ex=5)
-
 dt = datetime.now()
 print()
 print(datetime.now(), "  Sending telemetry APRS... Sequence number:", sequence_number)
- 
+
+# s_next_tm_tx = str(datetime.now() + tx_period)[:-7]
+# print('Time until next telemetry TX:', s_next_tm_tx)
+# rds.set('next_tm_tx', value=s_next_tm_tx, ex=5)
+
+
 int_or_none = lambda x: '' if x is None else int(x)
 temp1 = int_or_none(rds.get('T2')) # Maza
 hum1 = int_or_none(rds.get('Rh2'))

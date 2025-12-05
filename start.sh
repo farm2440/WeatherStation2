@@ -1,16 +1,13 @@
 #! /bin/bash
 
 cd /home/svilen/ws2
+# sudo date -s '2025-04-15 00:01:30'
+sleep 10   # wait for network connection
+# watchdog скриптовете ще пуснат sensor_reader.py и web_emit.py и ще ги рестартират ако крашнат
+/bin/python3 /home/svilen/ws2/wd_sensor_reader.py &
+/bin/python3 /home/svilen/ws2/wd_web_emit.py &
 
-# set clock to 00:00:01 to avoid activating sim900_bee_data.py before  clock is set
-sudo date -s '2025-04-15 00:01:30'
-sudo /bin/python3 /home/svilen/ws2/sim900_set_time.py 
-
-sleep 60   # wait for network connection
-
-/bin/python3 /home/svilen/ws2/sensor_reader.py &       
-/bin/python3 /home/svilen/ws2/web_emit.py &           
-sudo /bin/python3 /home/svilen/ws2/web_interface.py &  
+sudo /bin/python3 /home/svilen/ws2/web_interface.py &
 
 
 

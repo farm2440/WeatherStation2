@@ -18,6 +18,7 @@ import socket
 from datetime import timedelta, datetime
 import redis
 import os
+import RPi.GPIO as GPIO
 
 # TX20 връща число от 0 до 15 за посока. За да се получи в градуси се умножава по 22.5.
 # Със следния речник може да се конветира в низ:
@@ -113,7 +114,16 @@ while True:
         db_connect_retry = db_connect_retry - 1        
         time.sleep(5)
         continue
-    
+
+GPIO.setmode(GPIO.BCM)
+GPIO_PIN = 21
+GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+aprs_enable = GPIO.input(GPIO_PIN)
+GPIO.cleanup()
+if aprs_enable == GPIO.LOW:
+    print('send_aprs_ws: APRS not enabled! Check the switch position!')
+    exit(0)
+
 print()
 print(datetime.now(), "  Sending WS APRS...")
 # Извличане на записите на дъжд за последните 24 часа
@@ -151,22 +161,28 @@ for k in keys:
     rain1 += int(rds.get(k))
 
 int_or_none = lambda x: None if x is None else int(x)
+float_or_none = lambda x: None if x is None else float(x)
 temp = int_or_none(rds.get('WX:temp'))
 hum = int_or_none(rds.get('WX:hum'))
 pressure = int_or_none(rds.get('WX:pressure'))
 wind_dir = int_or_none(rds.get('WX:wind:dir'))
-wind_speed = int_or_none(rds.get('WX:wind:speed'))
-wind_gusts = int_or_none(rds.get('WX:wind:gusts'))
+wind_speed = float_or_none(rds.get('WX:wind:speed'))
+wind_gusts = float_or_none(rds.get('WX:wind:gusts'))
 ubat = rds.get('WX:UBAT')
-    
+
+# test
+print('wind_speed={}  type={}'.format(wind_speed, type(wind_speed)))
+print('wind_gusts={}  type={}'.format(wind_gusts, type(wind_gusts)))
+
+
 wind_dir_str = ''
 if wind_dir is not None:
     if wind_dir in wind_dir_dictionary:
         wind_dir_str = wind_dir_dictionary[wind_dir]
-        
+
 print('WX: rain1h:{} rain24h:{} T={} Rh={} P={} Ubat={}V'.format(rain1, rain24, temp, hum, pressure, ubat))
 if (wind_speed is not None) and (wind_gusts is not None) and (wind_dir is not None):
-    print('WX: wind dir:{}/{} speed:{}m/s gusts:{}m/s'.format(wind_dir*22.5, wind_dir_str, float(wind_speed)/10, float(wind_gusts)/10))
+    print('WX: wind dir:{}/{} speed:{}m/s gusts:{}m/s'.format(wind_dir*22.5, wind_dir_str, wind_speed, wind_gusts))
 else:
     print('WX: wind dir:{} speed:{} gusts:{}'.format(wind_dir, wind_speed, wind_gusts))
 
@@ -181,12 +197,12 @@ else:
 if wind_speed is None:
     wsmsg += '/...'
 else:                                                      # Числото върнато от сензора се дели на 10 за да се получат м/с
-    wsmsg += '/{:03d}'.format(int(float(wind_speed) * 0.223694))  # (/) сила на вятъра mph = ms * 2.23694
+    wsmsg += '/{:03d}'.format(int(wind_speed * 2.23694))  # (/) сила на вятъра mph = ms * 2.23694
 # Вятър - пориви
 if wind_gusts is None:
     wsmsg += 'g...'
 else:
-    wsmsg += 'g{:03d}'.format(int(float(wind_gusts) * 0.223694))  # (g) сила на поривa
+    wsmsg += 'g{:03d}'.format(int(wind_gusts * 2.23694))  # (g) сила на поривa
 # температура
 if temp is None:
     wsmsg += 't...'

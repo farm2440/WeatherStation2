@@ -6,7 +6,8 @@ import json
 mcast_port = 8888
 mcast_grp = "224.0.0.120"
 #interface_ip = str(INADDR_ANY)
-interface_ip = str("0.0.0.0")
+#interface_ip = str("0.0.0.0")
+interface_ip = str("192.168.152.90")
 s = socket(AF_INET, SOCK_DGRAM)
 s.bind(("", mcast_port))
 mreq = inet_aton(mcast_grp) + inet_aton(interface_ip)

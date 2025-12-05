@@ -109,8 +109,8 @@ if __name__ == '__main__':
         hum = int_or_none(rds.get('WX:hum'))
         pressure = int_or_none(rds.get('WX:pressure'))
         wind_dir = int_or_none(rds.get('WX:wind:dir'))
-        wind_speed = int_or_none(rds.get('WX:wind:speed'))
-        wind_gusts = int_or_none(rds.get('WX:wind:gusts'))
+        wind_speed = int_or_none(float(rds.get('WX:wind:speed')))
+        wind_gusts = int_or_none(float(rds.get('WX:wind:gusts')))
         ubat = rds.get('WX:UBAT')
         # Посоката на вятъра се показва като градуси и букви : 160(SSE)
         if wind_dir is not None:
